@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contatonavgraph"
+    app:startDestination="@id/listContatosFragment">
+    <fragment
+        android:id="@+id/listContatosFragment"
+        android:name="br.pro.nigri.assessmentandroid.ListContatosFragment"
+        android:label="fragment_list_contatos"
+        tools:layout="@layout/fragment_list_contatos" >
+        <action
+            android:id="@+id/action_listContatosFragment_to_createContatoFragment"
+            app:destination="@id/createContatoFragment" />
+        <action
+            android:id="@+id/action_listContatosFragment_to_detailsContatoFragment"
+            app:destination="@id/detailsContatoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createContatoFragment"
+        android:name="br.pro.nigri.assessmentandroid.createContatoFragment"
+        android:label="fragment_create_contato"
+        tools:layout="@layout/fragment_create_contato" />
+    <fragment
+        android:id="@+id/detailsContatoFragment"
+        android:name="br.pro.nigri.assessmentandroid.DetailsContatoFragment"
+        android:label="fragment_details_contato"
+        tools:layout="@layout/fragment_details_contato" />
+</navigation>

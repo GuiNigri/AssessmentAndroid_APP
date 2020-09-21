@@ -1,20 +1,18 @@
-package br.pro.nigri.assessmentandroid
+package br.pro.nigri.assessmentandroid.Fragments
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.pro.nigri.assessmentandroid.Adapter.ContatoAdapter
+import br.pro.nigri.assessmentandroid.R
 import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
-import kotlinx.android.synthetic.main.contatos_card.*
+import br.pro.nigri.assessmentandroid.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_count_contatos.*
 import kotlinx.android.synthetic.main.fragment_list_contatos.*
 

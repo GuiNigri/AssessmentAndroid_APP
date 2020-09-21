@@ -1,10 +1,11 @@
-package br.pro.nigri.assessmentandroid
+package br.pro.nigri.assessmentandroid.Fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import br.pro.nigri.assessmentandroid.R
 
 
 class CountContatosFragment : Fragment() {

@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ListContatosFragment">
+    tools:context=".Fragments.ListContatosFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/contatos_list"
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/fragment2"
-        android:name="br.pro.nigri.assessmentandroid.CountContatosFragment"
+        android:name="br.pro.nigri.assessmentandroid.Fragments.CountContatosFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

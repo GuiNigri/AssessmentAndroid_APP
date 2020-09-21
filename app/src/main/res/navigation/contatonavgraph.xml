@@ -6,7 +6,7 @@
     app:startDestination="@id/listContatosFragment">
     <fragment
         android:id="@+id/listContatosFragment"
-        android:name="br.pro.nigri.assessmentandroid.ListContatosFragment"
+        android:name="br.pro.nigri.assessmentandroid.Fragments.ListContatosFragment"
         android:label="fragment_list_contatos"
         tools:layout="@layout/fragment_list_contatos" >
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/createContatoFragment"
-        android:name="br.pro.nigri.assessmentandroid.createContatoFragment"
+        android:name="br.pro.nigri.assessmentandroid.Fragments.createContatoFragment"
         android:label="fragment_create_contato"
         tools:layout="@layout/fragment_create_contato" />
 </navigation>

@@ -1,19 +1,23 @@
 package br.pro.nigri.assessmentandroid
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.pro.nigri.assessmentandroid.Adapter.ContatoAdapter
 import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
+import kotlinx.android.synthetic.main.contatos_card.*
 import kotlinx.android.synthetic.main.fragment_count_contatos.*
 import kotlinx.android.synthetic.main.fragment_list_contatos.*
+
 
 class ListContatosFragment : Fragment() {
 
@@ -36,12 +40,14 @@ class ListContatosFragment : Fragment() {
             findNavController().navigate(R.id.createContatoFragment)
         }
 
+
+
     }
 
     private fun configurarRecyclerView() {
         contatos_list.layoutManager =
             LinearLayoutManager(activity)
-        contatos_list.adapter = ContatoAdapter()
+        contatos_list.adapter = ContatoAdapter(requireContext())
     }
 
     private fun popular(){
@@ -62,6 +68,7 @@ class ListContatosFragment : Fragment() {
                     adapter.atualizarDados(lista)
 
                     txtCountContatos.text = "Total de contatos: ${adapter.itemCount}"
+
                 }
             }
         })

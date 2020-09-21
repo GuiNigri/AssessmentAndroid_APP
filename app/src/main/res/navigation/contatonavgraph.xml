@@ -12,18 +12,10 @@
         <action
             android:id="@+id/action_listContatosFragment_to_createContatoFragment"
             app:destination="@id/createContatoFragment" />
-        <action
-            android:id="@+id/action_listContatosFragment_to_detailsContatoFragment"
-            app:destination="@id/detailsContatoFragment" />
     </fragment>
     <fragment
         android:id="@+id/createContatoFragment"
         android:name="br.pro.nigri.assessmentandroid.createContatoFragment"
         android:label="fragment_create_contato"
         tools:layout="@layout/fragment_create_contato" />
-    <fragment
-        android:id="@+id/detailsContatoFragment"
-        android:name="br.pro.nigri.assessmentandroid.DetailsContatoFragment"
-        android:label="fragment_details_contato"
-        tools:layout="@layout/fragment_details_contato" />
 </navigation>

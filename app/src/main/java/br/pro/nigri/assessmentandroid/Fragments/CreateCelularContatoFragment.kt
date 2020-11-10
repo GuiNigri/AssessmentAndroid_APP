@@ -6,53 +6,60 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import br.pro.nigri.assessmentandroid.Model.ContatoModel
+import br.pro.nigri.assessmentandroid.Model.CelularModel
 import br.pro.nigri.assessmentandroid.R
 import br.pro.nigri.assessmentandroid.Room.AppDatabase
+import br.pro.nigri.assessmentandroid.ViewModel.CelularCreateEditViewModel
+import br.pro.nigri.assessmentandroid.ViewModel.CelularViewModel
 import br.pro.nigri.assessmentandroid.ViewModel.ContatoCreateEditViewModel
-import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
-import br.pro.nigri.assessmentandroid.ViewModelFactory
+import br.pro.nigri.assessmentandroid.ViewModel.ContatoViewModel
+import kotlinx.android.synthetic.main.fragment_contato_details.*
+import kotlinx.android.synthetic.main.fragment_create_celular_contato.*
 import kotlinx.android.synthetic.main.fragment_create_contato.*
 
-class createContatoFragment : Fragment() {
+class CreateCelularContatoFragment : Fragment() {
 
-    private lateinit var viewModel: ContatoCreateEditViewModel
+    private lateinit var viewModel: CelularCreateEditViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_contato, container, false)
+        return inflater.inflate(R.layout.fragment_create_celular_contato, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ContatoCreateEditViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(CelularCreateEditViewModel::class.java)
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var celularViewModel : CelularViewModel? = null
+        activity?.let {
+            celularViewModel = ViewModelProviders.of(it)
+                .get(CelularViewModel::class.java)
+        }
 
-        btnSalvarContato.setOnClickListener{
+        var celularModel = celularViewModel!!.celular!!
 
-            if (txtNome.text.isEmpty() || txtNumber.text.toString().isEmpty()){
+        btnSalvarCelular.setOnClickListener {
+            if (txtCelularAdd.text.isEmpty()){
                 Toast.makeText(requireContext(),"Todos os campos são obrigatorios", Toast.LENGTH_LONG).show()
             }
             else
             {
-                val nomeContatoCadastrar = txtNome.text.toString()
-                val celularContato = txtNumber.text.toString().toLong()
+
+                val celularContato = txtCelularAdd.text.toString().toLong()
 
                 var db = AppDatabase.getInstance(requireContext().applicationContext)
-                viewModel.store(db.contatosDAO(),db.celularDAO(), nomeContatoCadastrar,celularContato)
+                viewModel.store(db.celularDAO(),celularContato,celularModel.contatoUserId)
                 findNavController().navigate(R.id.listContatosFragment)
             }
-
         }
     }
 

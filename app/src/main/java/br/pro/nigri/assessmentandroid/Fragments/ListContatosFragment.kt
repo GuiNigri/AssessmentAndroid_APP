@@ -1,18 +1,30 @@
+@file:Suppress("DEPRECATION")
+
 package br.pro.nigri.assessmentandroid.Fragments
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import br.pro.nigri.assessmentandroid.Adapter.ContatoAdapter
+import br.pro.nigri.assessmentandroid.Model.ContatoModel
 import br.pro.nigri.assessmentandroid.R
+import br.pro.nigri.assessmentandroid.Room.AppDatabase
+import br.pro.nigri.assessmentandroid.Room.RoomDatabase
+import br.pro.nigri.assessmentandroid.ViewModel.ContatoViewModel
 import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
 import br.pro.nigri.assessmentandroid.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_contato_details.*
 import kotlinx.android.synthetic.main.fragment_count_contatos.*
 import kotlinx.android.synthetic.main.fragment_list_contatos.*
 
@@ -20,7 +32,6 @@ import kotlinx.android.synthetic.main.fragment_list_contatos.*
 class ListContatosFragment : Fragment() {
 
     private lateinit var listContatoViewModel: ListContatoViewModel
-    private lateinit var viewModelFactory: ViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,9 +41,8 @@ class ListContatosFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_list_contatos, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        configurarRecyclerView()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         popular()
         btnCreateContato.setOnClickListener{
             findNavController().navigate(R.id.createContatoFragment)
@@ -42,33 +52,60 @@ class ListContatosFragment : Fragment() {
 
     }
 
-    private fun configurarRecyclerView() {
-        contatos_list.layoutManager =
-            LinearLayoutManager(activity)
-        contatos_list.adapter = ContatoAdapter(requireContext())
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        contatos_list.setOnItemClickListener{parent,view,i, id ->
+            val selectedItem = parent.getItemAtPosition(i) as ContatoModel
+
+            var contatoViewModel : ContatoViewModel? = null
+            activity?.let {
+                contatoViewModel = ViewModelProviders.of(it)
+                    .get(ContatoViewModel::class.java)
+            }
+
+            contatoViewModel!!.contato = ContatoModel(selectedItem.Nome,selectedItem.contatoId)
+
+            findNavController().navigate(R.id.contatoDetailsFragment)
+        }
+
     }
+
+
 
     private fun popular(){
-        viewModelFactory = ViewModelFactory()
-        activity?.let {
-            listContatoViewModel =
-                ViewModelProvider(it, viewModelFactory) // MainActivity
-                    .get(ListContatoViewModel::class.java)
+
+
+        listContatoViewModel = ViewModelProviders.of(this).get(ListContatoViewModel::class.java)
+
+        val db = AppDatabase.getInstance(requireActivity().applicationContext)
+        ContatoListaAsync().execute(db)
+
+    }
+
+    inner class ContatoListaAsync
+        : AsyncTask<RoomDatabase, Unit, Array<ContatoModel>>() {
+
+        override fun doInBackground // Segundo Plano
+                    (vararg db: RoomDatabase?): Array<ContatoModel> {
+            return listContatoViewModel.all(db[0]!!)
         }
-
-        listContatoViewModel.contatos.observe(viewLifecycleOwner, Observer {lista-> if (lista != null){
+        // Main Thread
+        override fun onPostExecute(result: Array<ContatoModel>?) {
+            super.onPostExecute(result)
+            if (result != null)
+                contatos_list.adapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_list_item_1,
+                    result
+                )
+            else
+                Toast.makeText(
+                    requireContext(),
+                    "Consulta não realizada.",
+                    Toast.LENGTH_LONG
+                ).show()
         }
-            if (lista != null){
-                // recupera o adapter da RecyclerView
-                val adapter = contatos_list.adapter
-
-                if (adapter is ContatoAdapter){
-                    adapter.atualizarDados(lista)
-
-                    txtCountContatos.text = "Total de contatos: ${adapter.itemCount}"
-
-                }
-            }
-        })
     }
 }
+

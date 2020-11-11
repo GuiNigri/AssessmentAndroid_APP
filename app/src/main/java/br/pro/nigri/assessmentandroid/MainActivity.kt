@@ -8,22 +8,12 @@ import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
-import kotlinx.android.synthetic.main.contatos_card.*
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var listContatoViewModel: ListContatoViewModel
-    private lateinit var viewModelFactory: ViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModelFactory = ViewModelFactory()
-        this?.let {
-            listContatoViewModel =
-                ViewModelProvider(this, viewModelFactory) // MainActivity
-                    .get(ListContatoViewModel::class.java)
-        }
     }
 }

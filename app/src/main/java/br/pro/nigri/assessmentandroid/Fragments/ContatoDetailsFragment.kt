@@ -57,11 +57,34 @@ class ContatoDetailsFragment : Fragment() {
 
         idUsuario = contato!!.contatoId!!
 
-
         var db = AppDatabase.getInstance(requireContext().applicationContext)
 
         popular()
 
+        ListenerListaCelulares()
+        SalvarContatoEditado(db)
+        DeletarContatoComCelulares(db)
+        AdicionarCelularAoContato()
+
+        btnVoltarLista.setOnClickListener{
+            findNavController().navigate(R.id.listContatosFragment)
+        }
+    }
+
+    private fun ListenerListaCelulares(){
+
+        list_numbers.setOnItemClickListener{parent,view,i, id ->
+            val selectedItem = parent.getItemAtPosition(i) as CelularModel
+
+            var celularViewModel = GetCelularViewModel()
+
+            celularViewModel!!.celular = CelularModel(selectedItem.celular,selectedItem.contatoUserId,selectedItem.celularId)
+
+            findNavController().navigate(R.id.editCelularContatoFragment)
+        }
+    }
+
+    private fun SalvarContatoEditado(db:RoomDatabase){
         btnSalvarEditarContato.setOnClickListener{
 
             if (txt_nome_editar.text.isEmpty()){
@@ -75,19 +98,19 @@ class ContatoDetailsFragment : Fragment() {
             }
 
         }
+    }
 
+    private fun DeletarContatoComCelulares(db:RoomDatabase){
         btn_deletar_usuario.setOnClickListener{
-            editarViewModel.delete(db.contatosDAO(),contato!!.Nome,idUsuario)
+
+            editarViewModel.delete(db.contatosDAO(),db.celularDAO(),idUsuario)
             findNavController().navigate(R.id.listContatosFragment)
         }
+    }
 
+    private fun AdicionarCelularAoContato(){
         btnAddCelular.setOnClickListener{
-            var celularViewModel : CelularViewModel? = null
-            activity?.let {
-                celularViewModel = ViewModelProviders.of(it)
-                    .get(CelularViewModel::class.java)
-            }
-
+            var celularViewModel = GetCelularViewModel()
             celularViewModel!!.celular = CelularModel(0,idUsuario)
 
             findNavController().navigate(R.id.createCelularContatoFragment)
@@ -104,12 +127,22 @@ class ContatoDetailsFragment : Fragment() {
 
     }
 
+    private fun GetCelularViewModel() : CelularViewModel{
+        var celularViewModel : CelularViewModel? = null
+        activity?.let {
+            celularViewModel = ViewModelProviders.of(it)
+                .get(CelularViewModel::class.java)
+        }
+
+        return celularViewModel!!
+    }
+
     inner class CelularListaAsync
         : AsyncTask<RoomDatabase, Unit, Array<CelularModel>>() {
 
         override fun doInBackground // Segundo Plano
                     (vararg db: RoomDatabase?): Array<CelularModel> {
-            return listCelularViewModel.show(db[0]!!, idUsuario)
+            return listCelularViewModel.getCelularById(db[0]!!, idUsuario)
         }
         // Main Thread
         override fun onPostExecute(result: Array<CelularModel>?) {

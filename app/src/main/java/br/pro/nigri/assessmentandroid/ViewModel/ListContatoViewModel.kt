@@ -7,7 +7,6 @@ import br.pro.nigri.assessmentandroid.Model.ContatoModel
 import br.pro.nigri.assessmentandroid.Room.RoomDatabase
 
 class ListContatoViewModel:ViewModel() {
-
     fun all(db: RoomDatabase):Array<ContatoModel>{
         return  db.contatosDAO().all()
     }

@@ -28,12 +28,9 @@ class CelularCreateEditViewModel:ViewModel() {
 
     fun delete(
         celularDAO: CelularDAO,
-        contatoCelular: Long,
-        celularId:Int,
-        contatoId:Int)
+        celularId:Int)
     {
-        var celularModel = CelularModel(contatoCelular,contatoId,celularId)
-        celularDAO.delete(celularModel)
+        celularDAO.delete(celularId)
 
     }
 }

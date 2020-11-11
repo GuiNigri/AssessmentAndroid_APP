@@ -39,6 +39,7 @@ class CreateCelularContatoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         var celularViewModel : CelularViewModel? = null
         activity?.let {
             celularViewModel = ViewModelProviders.of(it)
@@ -47,18 +48,22 @@ class CreateCelularContatoFragment : Fragment() {
 
         var celularModel = celularViewModel!!.celular!!
 
+        CadastrarCelularContato(celularModel)
+
+    }
+
+    private fun CadastrarCelularContato(celularModel:CelularModel){
         btnSalvarCelular.setOnClickListener {
             if (txtCelularAdd.text.isEmpty()){
                 Toast.makeText(requireContext(),"Todos os campos são obrigatorios", Toast.LENGTH_LONG).show()
             }
             else
             {
-
                 val celularContato = txtCelularAdd.text.toString().toLong()
 
                 var db = AppDatabase.getInstance(requireContext().applicationContext)
                 viewModel.store(db.celularDAO(),celularContato,celularModel.contatoUserId)
-                findNavController().navigate(R.id.listContatosFragment)
+                findNavController().navigate(R.id.contatoDetailsFragment)
             }
         }
     }

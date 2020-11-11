@@ -38,6 +38,10 @@ class createContatoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        CadastrarContato()
+    }
+
+    private fun CadastrarContato(){
         btnSalvarContato.setOnClickListener{
 
             if (txtNome.text.isEmpty() || txtNumber.text.toString().isEmpty()){

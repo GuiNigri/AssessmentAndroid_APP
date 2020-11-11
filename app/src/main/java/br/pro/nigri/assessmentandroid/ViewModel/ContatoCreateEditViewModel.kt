@@ -31,9 +31,15 @@ class ContatoCreateEditViewModel:ViewModel() {
 
     fun delete(
         contatosDAO: ContatosDAO,
-        contatoNome: String,
+        celularDAO: CelularDAO,
         contatoId:Int){
-        var contato = ContatoModel(contatoNome,contatoId)
-        contatosDAO.delete(contato)
+
+        val listaCelular = celularDAO.getCelularById(contatoId)
+
+        listaCelular.forEach {
+            celularDAO.delete(it.celularId!!)
+        }
+
+        contatosDAO.delete(contatoId)
     }
 }

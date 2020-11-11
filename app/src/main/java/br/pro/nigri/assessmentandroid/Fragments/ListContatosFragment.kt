@@ -25,7 +25,6 @@ import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
 import br.pro.nigri.assessmentandroid.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_contato_details.*
-import kotlinx.android.synthetic.main.fragment_count_contatos.*
 import kotlinx.android.synthetic.main.fragment_list_contatos.*
 
 

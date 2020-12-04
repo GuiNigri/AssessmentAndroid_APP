@@ -39,7 +39,6 @@ class LoginFragment : Fragment() {
 
         btnAcessarLogin.setOnClickListener {
 
-
             var email = txtLogin.text.toString()
             var senha = txtSenha.text.toString()
 
@@ -66,6 +65,7 @@ class LoginFragment : Fragment() {
                         it.message,
                         Toast.LENGTH_LONG
                     ).show()
+                    progressBarLogin.visibility = View.GONE
                 }
             }else{
                 Toast.makeText(

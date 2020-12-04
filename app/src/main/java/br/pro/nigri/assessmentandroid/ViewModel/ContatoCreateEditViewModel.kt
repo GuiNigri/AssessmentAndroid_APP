@@ -1,45 +1,45 @@
 package br.pro.nigri.assessmentandroid.ViewModel
 
 import androidx.lifecycle.ViewModel
-import br.pro.nigri.assessmentandroid.DAO.CelularDAO
-import br.pro.nigri.assessmentandroid.DAO.ContatosDAO
-import br.pro.nigri.assessmentandroid.Model.CelularModel
 import br.pro.nigri.assessmentandroid.Model.ContatoModel
-import java.math.BigInteger
+import br.pro.nigri.assessmentandroid.Model.Usuario
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ContatoCreateEditViewModel:ViewModel() {
-    fun store(
-        contatosDAO: ContatosDAO,
-        celularDAO: CelularDAO,
-        contatoNome: String,
-    contatoCelular: Long)
-    {
-        var contato = ContatoModel(contatoNome)
-        var id = contatosDAO.store(contato).toInt()
 
-        var celularModel = CelularModel(contatoCelular,id)
-        celularDAO.store(celularModel)
+    var firebaseFirestore = FirebaseFirestore.getInstance()
+    var collection = firebaseFirestore.collection("contato")
+
+    fun createContato(nomeContato:String, celular:Long): Task<Void> {
+
+        var document = collection.document()
+
+        var taskFireStore = document.set(
+            mapOf(
+                "nome" to nomeContato,
+                "celular" to celular
+            )
+        )
+
+        return taskFireStore
     }
 
-    fun update(
-        contatosDAO: ContatosDAO,
-        contatoNome: String,
-        contatoId:Int){
-        var contato = ContatoModel(contatoNome,contatoId)
-        contatosDAO.update(contato)
+    fun editContato(nomeContato:String, celular:Long, id:String): Task<Void>{
+
+        var contato = ContatoModel(nomeContato,celular)
+
+        var task = collection.document(id).set(contato)
+
+        return task
     }
 
-    fun delete(
-        contatosDAO: ContatosDAO,
-        celularDAO: CelularDAO,
-        contatoId:Int){
+    fun getContatoById(id:String): Task<DocumentSnapshot> {
+        var document = collection.document(id)
+        var task = document.get()
 
-        val listaCelular = celularDAO.getCelularById(contatoId)
-
-        listaCelular.forEach {
-            celularDAO.delete(it.celularId!!)
-        }
-
-        contatosDAO.delete(contatoId)
+        return task
     }
 }

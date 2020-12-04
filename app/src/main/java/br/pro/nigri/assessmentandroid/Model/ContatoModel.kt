@@ -1,19 +1,11 @@
 package br.pro.nigri.assessmentandroid.Model
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
-import java.io.Serializable
-import java.math.BigInteger
+import com.google.firebase.firestore.DocumentId
 
-@Entity
+
 class ContatoModel (
-    var Nome:String,
-    @PrimaryKey var contatoId: Int? = null
+    var Nome:String?=null,
+    var celular:Long?=null,
+    @DocumentId var id: String? = null
 
-){
-    override fun toString(): String {
-        return "$Nome"
-    }
-}
+)

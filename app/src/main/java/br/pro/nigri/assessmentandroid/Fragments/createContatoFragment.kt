@@ -1,25 +1,25 @@
 package br.pro.nigri.assessmentandroid.Fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import br.pro.nigri.assessmentandroid.Model.ContatoModel
 import br.pro.nigri.assessmentandroid.R
-import br.pro.nigri.assessmentandroid.Room.AppDatabase
 import br.pro.nigri.assessmentandroid.ViewModel.ContatoCreateEditViewModel
-import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
+import br.pro.nigri.assessmentandroid.ViewModel.LoginViewModel
+import br.pro.nigri.assessmentandroid.ViewModel.UsuarioCRUDViewModel
 import br.pro.nigri.assessmentandroid.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_create_contato.*
 
 class createContatoFragment : Fragment() {
 
-    private lateinit var viewModel: ContatoCreateEditViewModel
+    private lateinit var contatoCreateEditViewModel: ContatoCreateEditViewModel
+    private lateinit var viewModelFactory: ViewModelFactory
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,35 +29,42 @@ class createContatoFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_create_contato, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ContatoCreateEditViewModel::class.java)
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        CadastrarContato()
-    }
+        viewModelFactory = ViewModelFactory()
+        activity?.let {
+            contatoCreateEditViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ContatoCreateEditViewModel::class.java)
+        }
 
-    private fun CadastrarContato(){
-        btnSalvarContato.setOnClickListener{
+        btnSalvarContato.setOnClickListener {
 
-            if (txtNome.text.isEmpty() || txtNumber.text.toString().isEmpty()){
-                Toast.makeText(requireContext(),"Todos os campos são obrigatorios", Toast.LENGTH_LONG).show()
+            if (txtNome.text.isNotEmpty() && txtNumber.text.isNotEmpty()){
+                var result = contatoCreateEditViewModel.createContato(txtNome.text.toString(),txtNumber.text.toString().toLong())
+
+                result.addOnSuccessListener {
+                    Toast.makeText(requireContext(),"Contato Cadastrado com sucesso!",Toast.LENGTH_LONG).show()
+                    findNavController().popBackStack()
+                }
+
+                result.addOnFailureListener {
+                    Toast.makeText(requireContext(),"Erro ao cadastrar contato: ${it.message}",Toast.LENGTH_LONG).show()
+                }
             }
             else
             {
-                val nomeContatoCadastrar = txtNome.text.toString()
-                val celularContato = txtNumber.text.toString().toLong()
-
-                var db = AppDatabase.getInstance(requireContext().applicationContext)
-                viewModel.store(db.contatosDAO(),db.celularDAO(), nomeContatoCadastrar,celularContato)
-                findNavController().navigate(R.id.listContatosFragment)
+                Toast.makeText(requireContext(),"Todos os campos devem ser preenchidos.",Toast.LENGTH_LONG).show()
             }
 
+
         }
+
+
+
     }
+
 
 }

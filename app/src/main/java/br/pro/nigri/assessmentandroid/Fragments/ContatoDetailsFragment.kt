@@ -2,31 +2,26 @@
 
 package br.pro.nigri.assessmentandroid.Fragments
 
-import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
-import br.pro.nigri.assessmentandroid.Model.CelularModel
-import br.pro.nigri.assessmentandroid.Model.ContatoModel
 import br.pro.nigri.assessmentandroid.R
-import br.pro.nigri.assessmentandroid.Room.AppDatabase
-import br.pro.nigri.assessmentandroid.Room.RoomDatabase
 import br.pro.nigri.assessmentandroid.ViewModel.*
+import br.pro.nigri.assessmentandroid.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_contato_details.*
-import kotlinx.android.synthetic.main.fragment_create_contato.*
-import kotlinx.android.synthetic.main.fragment_list_contatos.*
 
 class ContatoDetailsFragment : Fragment() {
 
-    private lateinit var editarViewModel: ContatoCreateEditViewModel
-    private lateinit var listCelularViewModel: ListCelularViewModel
-    private var idUsuario: Int = 0
+    private lateinit var contatoCreateEditViewModel: ContatoCreateEditViewModel
+    private lateinit var contatoViewModel: ContatoViewModel
+    private lateinit var viewModelFactory: ViewModelFactory
+    var idContato:String?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,131 +31,55 @@ class ContatoDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_contato_details, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        editarViewModel = ViewModelProviders.of(this).get(ContatoCreateEditViewModel::class.java)
-
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var contatoViewModel: ContatoViewModel? = null
+        viewModelFactory = ViewModelFactory()
         activity?.let {
-            contatoViewModel = ViewModelProviders.of(it)
-                .get(ContatoViewModel::class.java)
+            contatoCreateEditViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ContatoCreateEditViewModel::class.java)
         }
 
-        var contato = contatoViewModel!!.contato
+        getInfoContato()
 
-        txt_nome_editar.setText(contato!!.Nome)
+        btnSalvarEditar.setOnClickListener {
+            if (txt_nome_editar.text.isNotEmpty() && txtCelularEditar.text.isNotEmpty()){
+                var result = contatoCreateEditViewModel.editContato(txt_nome_editar.text.toString(),txtCelularEditar.text.toString().toLong(),idContato!!)
 
-        idUsuario = contato!!.contatoId!!
-
-        var db = AppDatabase.getInstance(requireContext().applicationContext)
-
-        popular()
-
-        ListenerListaCelulares()
-        SalvarContatoEditado(db)
-        DeletarContatoComCelulares(db)
-        AdicionarCelularAoContato()
-
-        btnVoltarLista.setOnClickListener{
-            findNavController().navigate(R.id.listContatosFragment)
-        }
-    }
-
-    private fun ListenerListaCelulares(){
-
-        list_numbers.setOnItemClickListener{parent,view,i, id ->
-            val selectedItem = parent.getItemAtPosition(i) as CelularModel
-
-            var celularViewModel = GetCelularViewModel()
-
-            celularViewModel!!.celular = CelularModel(selectedItem.celular,selectedItem.contatoUserId,selectedItem.celularId)
-
-            findNavController().navigate(R.id.editCelularContatoFragment)
-        }
-    }
-
-    private fun SalvarContatoEditado(db:RoomDatabase){
-        btnSalvarEditarContato.setOnClickListener{
-
-            if (txt_nome_editar.text.isEmpty()){
-                Toast.makeText(requireContext(),"Todos os campos são obrigatorios", Toast.LENGTH_LONG).show()
-            }
-            else
-            {
-                val nomeContatoEditar = txt_nome_editar.text.toString()
-                editarViewModel.update(db.contatosDAO(),nomeContatoEditar,idUsuario)
-                findNavController().navigate(R.id.listContatosFragment)
+                result.addOnSuccessListener {
+                    Toast.makeText(requireContext(),"Contato Atualizado com Sucesso!",Toast.LENGTH_LONG).show()
+                }
+                result.addOnFailureListener {
+                    Toast.makeText(requireContext(),"Erro ao atualizar o contato: ${it.message}",Toast.LENGTH_LONG).show()
+                }
             }
 
         }
-    }
-
-    private fun DeletarContatoComCelulares(db:RoomDatabase){
-        btn_deletar_usuario.setOnClickListener{
-
-            editarViewModel.delete(db.contatosDAO(),db.celularDAO(),idUsuario)
-            findNavController().navigate(R.id.listContatosFragment)
-        }
-    }
-
-    private fun AdicionarCelularAoContato(){
-        btnAddCelular.setOnClickListener{
-            var celularViewModel = GetCelularViewModel()
-            celularViewModel!!.celular = CelularModel(0,idUsuario)
-
-            findNavController().navigate(R.id.createCelularContatoFragment)
-        }
-    }
-
-    private fun popular(){
-
-
-        listCelularViewModel = ViewModelProviders.of(this).get(ListCelularViewModel::class.java)
-
-        val db = AppDatabase.getInstance(requireActivity().applicationContext)
-        CelularListaAsync().execute(db)
 
     }
 
-    private fun GetCelularViewModel() : CelularViewModel{
-        var celularViewModel : CelularViewModel? = null
+    private fun getInfoContato(){
+        viewModelFactory = ViewModelFactory()
         activity?.let {
-            celularViewModel = ViewModelProviders.of(it)
-                .get(CelularViewModel::class.java)
+            contatoViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ContatoViewModel::class.java)
         }
 
-        return celularViewModel!!
+        idContato = contatoViewModel.id
+
+        var result = contatoCreateEditViewModel.getContatoById(idContato!!)
+        result.addOnSuccessListener {
+            var contato = it.toObject(ContatoViewModel::class.java)
+            txt_nome_editar.setText(contato!!.Nome)
+            txtCelularEditar.setText(contato!!.celular.toString())
+        }
+
+
     }
 
-    inner class CelularListaAsync
-        : AsyncTask<RoomDatabase, Unit, Array<CelularModel>>() {
 
-        override fun doInBackground // Segundo Plano
-                    (vararg db: RoomDatabase?): Array<CelularModel> {
-            return listCelularViewModel.getCelularById(db[0]!!, idUsuario)
-        }
-        // Main Thread
-        override fun onPostExecute(result: Array<CelularModel>?) {
-            super.onPostExecute(result)
-            if (result != null)
-                list_numbers.adapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_list_item_1,
-                    result
-                )
-            else
-                Toast.makeText(
-                    requireContext(),
-                    "Consulta não realizada.",
-                    Toast.LENGTH_LONG
-                ).show()
-        }
-
-    }
 
 }

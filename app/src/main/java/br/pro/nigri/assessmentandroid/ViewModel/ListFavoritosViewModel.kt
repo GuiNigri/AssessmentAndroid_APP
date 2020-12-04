@@ -2,31 +2,23 @@ package br.pro.nigri.assessmentandroid.ViewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.Task
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 
-class ListContatoViewModel:ViewModel() {
+class ListFavoritosViewModel:ViewModel() {
 
     var firebaseFirestore = FirebaseFirestore.getInstance()
-    var collection = firebaseFirestore.collection("contato")
-    var listaContatos = MutableLiveData<List<ContatoViewModel>>()
+    var collection = firebaseFirestore.collection("favorito")
+    var listaFavoritos = MutableLiveData<List<ContatoViewModel>>()
 
-
-    fun getContatos() {
+    fun getFavoritos() {
         var task = collection.get()
         task.addOnSuccessListener {
             var contato = it.toObjects(ContatoViewModel::class.java)
-            listaContatos.value = contato
+            listaFavoritos.value = contato
         }
         task.addOnFailureListener {
 
         }
 
     }
-
-
-
-
-
 }

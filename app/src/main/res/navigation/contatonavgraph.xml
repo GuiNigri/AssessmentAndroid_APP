@@ -7,40 +7,38 @@
     <fragment
         android:id="@+id/listContatosFragment"
         android:name="br.pro.nigri.assessmentandroid.Fragments.ListContatosFragment"
-        android:label="fragment_list_contatos"
+        android:label="Contatos"
         tools:layout="@layout/fragment_list_contatos" >
-        <action
-            android:id="@+id/action_listContatosFragment_to_createContatoFragment"
-            app:destination="@id/createContatoFragment" />
         <action
             android:id="@+id/action_listContatosFragment_to_contatoDetailsFragment"
             app:destination="@id/contatoDetailsFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/createContatoFragment"
         android:name="br.pro.nigri.assessmentandroid.Fragments.createContatoFragment"
-        android:label="fragment_create_contato"
+        android:label="Cadastrar Contato"
         tools:layout="@layout/fragment_create_contato" />
+
     <fragment
         android:id="@+id/contatoDetailsFragment"
         android:name="br.pro.nigri.assessmentandroid.Fragments.ContatoDetailsFragment"
         android:label="fragment_contato_details"
-        tools:layout="@layout/fragment_contato_details" >
+        tools:layout="@layout/fragment_contato_details" />
+
+    <fragment
+        android:id="@+id/contaFragment"
+        android:name="br.pro.nigri.assessmentandroid.Fragments.ContaFragment"
+        android:label="Conta"
+        tools:layout="@layout/fragment_conta" />
+    <fragment
+        android:id="@+id/listFavoritosFragment"
+        android:name="br.pro.nigri.assessmentandroid.Fragments.ListFavoritosFragment"
+        android:label="Favoritos"
+        tools:layout="@layout/fragment_list_favoritos" >
         <action
-            android:id="@+id/action_contatoDetailsFragment_to_createCelularContatoFragment"
-            app:destination="@id/createCelularContatoFragment" />
-        <action
-            android:id="@+id/action_contatoDetailsFragment_to_editCelularContatoFragment"
-            app:destination="@id/editCelularContatoFragment" />
+            android:id="@+id/action_listFavoritosFragment_to_contatoDetailsFragment"
+            app:destination="@id/contatoDetailsFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/createCelularContatoFragment"
-        android:name="br.pro.nigri.assessmentandroid.Fragments.CreateCelularContatoFragment"
-        android:label="fragment_create_celular_contato"
-        tools:layout="@layout/fragment_create_celular_contato" />
-    <fragment
-        android:id="@+id/editCelularContatoFragment"
-        android:name="br.pro.nigri.assessmentandroid.Fragments.EditCelularContatoFragment"
-        android:label="fragment_edit_celular_contato"
-        tools:layout="@layout/fragment_edit_celular_contato" />
+
 </navigation>

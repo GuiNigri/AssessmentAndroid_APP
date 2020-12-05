@@ -19,9 +19,12 @@ import kotlinx.android.synthetic.main.fragment_contato_details.*
 class ContatoDetailsFragment : Fragment() {
 
     private lateinit var contatoCreateEditViewModel: ContatoCreateEditViewModel
+    private lateinit var listFavoritosViewModel: ListFavoritosViewModel
     private lateinit var contatoViewModel: ContatoViewModel
     private lateinit var viewModelFactory: ViewModelFactory
     var idContato:String?=null
+    private var idFavorito:String?=null
+    var statusFavorito:Boolean?=false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +61,19 @@ class ContatoDetailsFragment : Fragment() {
 
         }
 
+        btnAddFav.setOnClickListener {
+            verificarFavoritos()
+            if (statusFavorito!!){
+                removeFavorito()
+            }
+            else
+            {
+                addFavorito()
+            }
+
+
+        }
+
     }
 
     private fun getInfoContato(){
@@ -80,6 +96,54 @@ class ContatoDetailsFragment : Fragment() {
 
     }
 
+    private fun verificarFavoritos(){
+        viewModelFactory = ViewModelFactory()
+        activity?.let {
+            listFavoritosViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ListFavoritosViewModel::class.java)
+        }
+
+        listFavoritosViewModel.checkFav(idContato!!){
+
+            if (!it.isEmpty){
+                var fav = it.documents[0].toObject(FavoritoViewModel::class.java)
+                idFavorito = fav!!.id
+                statusFavorito = true
+            }
+
+        }
+
+    }
+
+    private fun addFavorito(){
+
+
+        var result = listFavoritosViewModel.addFavoritos(idContato!!)
+        result.addOnSuccessListener {
+            Toast.makeText(requireContext(),"Contato adicionado aos favoritos com sucesso!",Toast.LENGTH_LONG).show()
+        }
+        result.addOnFailureListener {
+            Toast.makeText(requireContext(),"Erro ao adicionar contato aos favoritos.",Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun removeFavorito(){
+        viewModelFactory = ViewModelFactory()
+        activity?.let {
+            listFavoritosViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ListFavoritosViewModel::class.java)
+        }
+
+        var result = listFavoritosViewModel.removeFavorito(idFavorito!!)
+        result.addOnSuccessListener {
+            Toast.makeText(requireContext(),"Contato removido dos favoritos com sucesso!",Toast.LENGTH_LONG).show()
+        }
+        result.addOnFailureListener {
+            Toast.makeText(requireContext(),"Erro ao remover contato dos favoritos!.",Toast.LENGTH_LONG).show()
+        }
+    }
 
 
 }

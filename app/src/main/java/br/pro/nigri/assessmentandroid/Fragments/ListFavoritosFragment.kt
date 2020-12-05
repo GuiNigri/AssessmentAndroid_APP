@@ -5,15 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.pro.nigri.assessmentandroid.Adapter.ContatoAdapter
 import br.pro.nigri.assessmentandroid.R
-import br.pro.nigri.assessmentandroid.ViewModel.ContatoViewModel
-import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
-import br.pro.nigri.assessmentandroid.ViewModel.ListFavoritosViewModel
+import br.pro.nigri.assessmentandroid.ViewModel.*
 import br.pro.nigri.assessmentandroid.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_contatos.*
 import kotlinx.android.synthetic.main.fragment_list_favoritos.*
@@ -22,7 +22,9 @@ class ListFavoritosFragment : Fragment() {
 
     private lateinit var listFavoritosViewModel: ListFavoritosViewModel
     private lateinit var contatoViewModel: ContatoViewModel
+    private lateinit var contatoCreateEditViewModel: ContatoCreateEditViewModel
     private lateinit var viewModelFactory: ViewModelFactory
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,13 +38,15 @@ class ListFavoritosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         configurarRecyclerView()
-        popular()
+        chamarDados()
+
+
     }
 
     private fun configurarRecyclerView() {
         list_favoritos.layoutManager =
             LinearLayoutManager(activity)
-        list_favoritos.adapter = ContatoAdapter(){ nome: String,celular:Long, id: String ->
+        list_favoritos.adapter = ContatoAdapter(){
 
             viewModelFactory = ViewModelFactory()
             activity?.let {
@@ -51,26 +55,33 @@ class ListFavoritosFragment : Fragment() {
                         .get(ContatoViewModel::class.java)
             }
 
-            contatoViewModel.Nome = nome
-            contatoViewModel.celular = celular
-            contatoViewModel.id = id
+            contatoViewModel.id = it
 
             findNavController().navigate(R.id.contatoDetailsFragment)
         }
     }
 
-    private fun popular(){
+    private fun chamarDados(){
 
         viewModelFactory = ViewModelFactory()
         activity?.let {
+            contatoCreateEditViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ContatoCreateEditViewModel::class.java)
+
             listFavoritosViewModel =
                 ViewModelProvider(it, viewModelFactory) // MainActivity
                     .get(ListFavoritosViewModel::class.java)
         }
 
-        listFavoritosViewModel.getFavoritos()
+        listFavoritosViewModel.getFavoritos(){
+            var favoritos = it.toObjects(FavoritoViewModel::class.java)
+            contatoCreateEditViewModel.converterFavToContact(favoritos)
 
-        listFavoritosViewModel.listaFavoritos.observe(viewLifecycleOwner, Observer {lista->
+
+        }
+
+        contatoCreateEditViewModel.listaFavoritos.observe(viewLifecycleOwner, Observer {lista->
             if (lista != null){
                 // recupera o adapter da RecyclerView
                 val adapter = list_favoritos.adapter
@@ -79,6 +90,8 @@ class ListFavoritosFragment : Fragment() {
                     adapter.atualizarDados(lista)
 
                 }
+            }else{
+                Toast.makeText(requireContext(),"lista nula",Toast.LENGTH_LONG).show()
             }
 
 

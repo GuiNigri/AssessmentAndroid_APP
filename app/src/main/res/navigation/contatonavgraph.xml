@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/contatoDetailsFragment"
         android:name="br.pro.nigri.assessmentandroid.Fragments.ContatoDetailsFragment"
-        android:label="fragment_contato_details"
+        android:label="Detalhes do contato"
         tools:layout="@layout/fragment_contato_details" />
 
     <fragment

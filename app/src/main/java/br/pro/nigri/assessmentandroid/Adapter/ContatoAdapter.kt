@@ -43,9 +43,9 @@ class ContatoAdapter(
 
     }
 
-    fun atualizarDados(moedas: List<ContatoViewModel>)
+    fun atualizarDados(contatos: List<ContatoViewModel>)
     {
-        listaContatos = moedas
+        listaContatos = contatos
 
         notifyDataSetChanged()
     }

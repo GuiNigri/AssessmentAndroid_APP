@@ -16,6 +16,7 @@ class ContatoCreateEditViewModel:ViewModel() {
     var collection = firebaseFirestore.collection("contato")
     var listaFavoritos = MutableLiveData<List<ContatoViewModel>>()
     var contatosFavoritos: MutableList<ContatoViewModel>? = ArrayList()
+    var detailsContato = MutableLiveData<ContatoViewModel>()
 
     fun createContato(nomeContato:String, celular:Long): Task<Void> {
 
@@ -46,6 +47,10 @@ class ContatoCreateEditViewModel:ViewModel() {
     fun getContatoById(id:String): Task<DocumentSnapshot> {
         var document = collection.document(id)
         var task = document.get()
+        task.addOnSuccessListener {
+            var contato = it.toObject(ContatoViewModel::class.java)
+            detailsContato.value = contato
+        }
 
         return task
     }

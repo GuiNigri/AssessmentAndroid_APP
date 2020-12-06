@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.pro.nigri.assessmentandroid.Adapter.ContatoAdapter
 import br.pro.nigri.assessmentandroid.R
+import br.pro.nigri.assessmentandroid.ViewModel.ContatoCreateEditViewModel
 import br.pro.nigri.assessmentandroid.ViewModel.ContatoViewModel
 import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
 import br.pro.nigri.assessmentandroid.ViewModelFactory
@@ -22,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_list_contatos.*
 class ListContatosFragment : Fragment() {
 
     private lateinit var listContatoViewModel: ListContatoViewModel
-    private lateinit var contatoViewModel: ContatoViewModel
+    private lateinit var contatoCreateEditViewModel: ContatoCreateEditViewModel
     private lateinit var viewModelFactory: ViewModelFactory
 
     override fun onCreateView(
@@ -48,12 +49,12 @@ class ListContatosFragment : Fragment() {
 
             viewModelFactory = ViewModelFactory()
             activity?.let {
-                contatoViewModel =
+                contatoCreateEditViewModel =
                     ViewModelProvider(it, viewModelFactory) // MainActivity
-                        .get(ContatoViewModel::class.java)
+                        .get(ContatoCreateEditViewModel::class.java)
             }
 
-            contatoViewModel.id = it
+            contatoCreateEditViewModel.getContatoById(it)
 
             findNavController().navigate(R.id.contatoDetailsFragment)
 

@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import br.pro.nigri.assessmentandroid.R
@@ -24,7 +25,7 @@ class ContatoDetailsFragment : Fragment() {
     private lateinit var viewModelFactory: ViewModelFactory
     var idContato:String?=null
     private var idFavorito:String?=null
-    var statusFavorito:Boolean?=false
+    private var statusFavorito:Boolean?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,57 +44,45 @@ class ContatoDetailsFragment : Fragment() {
             contatoCreateEditViewModel =
                 ViewModelProvider(it, viewModelFactory) // MainActivity
                     .get(ContatoCreateEditViewModel::class.java)
-        }
 
-        getInfoContato()
-
-        btnSalvarEditar.setOnClickListener {
-            if (txt_nome_editar.text.isNotEmpty() && txtCelularEditar.text.isNotEmpty()){
-                var result = contatoCreateEditViewModel.editContato(txt_nome_editar.text.toString(),txtCelularEditar.text.toString().toLong(),idContato!!)
-
-                result.addOnSuccessListener {
-                    Toast.makeText(requireContext(),"Contato Atualizado com Sucesso!",Toast.LENGTH_LONG).show()
-                }
-                result.addOnFailureListener {
-                    Toast.makeText(requireContext(),"Erro ao atualizar o contato: ${it.message}",Toast.LENGTH_LONG).show()
-                }
-            }
-
-        }
-
-        btnAddFav.setOnClickListener {
-            verificarFavoritos()
-            if (statusFavorito!!){
-                removeFavorito()
-            }
-            else
-            {
-                addFavorito()
-            }
-
-
-        }
-
-    }
-
-    private fun getInfoContato(){
-        viewModelFactory = ViewModelFactory()
-        activity?.let {
             contatoViewModel =
                 ViewModelProvider(it, viewModelFactory) // MainActivity
                     .get(ContatoViewModel::class.java)
         }
 
-        idContato = contatoViewModel.id
 
-        var result = contatoCreateEditViewModel.getContatoById(idContato!!)
-        result.addOnSuccessListener {
-            var contato = it.toObject(ContatoViewModel::class.java)
-            txt_nome_editar.setText(contato!!.Nome)
-            txtCelularEditar.setText(contato!!.celular.toString())
-        }
+        contatoCreateEditViewModel.detailsContato.observe(viewLifecycleOwner, Observer {
 
+            idContato = it.id
+            verificarFavoritos()
+            txt_nome_editar.setText(it.Nome)
+            txtCelularEditar.setText(it.celular.toString())
 
+            btnAddFav.setOnClickListener {
+
+                if (statusFavorito!!){
+                    removeFavorito()
+                }
+                else
+                {
+                    addFavorito()
+                }
+            }
+
+            btnSalvarEditar.setOnClickListener {
+                if (txt_nome_editar.text.isNotEmpty() && txtCelularEditar.text.isNotEmpty()){
+                    var result = contatoCreateEditViewModel.editContato(txt_nome_editar.text.toString(),txtCelularEditar.text.toString().toLong(),idContato!!)
+
+                    result.addOnSuccessListener {
+                        Toast.makeText(requireContext(),"Contato Atualizado com Sucesso!",Toast.LENGTH_LONG).show()
+                    }
+                    result.addOnFailureListener {
+                        Toast.makeText(requireContext(),"Erro ao atualizar o contato: ${it.message}",Toast.LENGTH_LONG).show()
+                    }
+                }
+
+            }
+        })
     }
 
     private fun verificarFavoritos(){
@@ -110,6 +99,8 @@ class ContatoDetailsFragment : Fragment() {
                 var fav = it.documents[0].toObject(FavoritoViewModel::class.java)
                 idFavorito = fav!!.id
                 statusFavorito = true
+            }else{
+                statusFavorito = false
             }
 
         }
@@ -122,6 +113,7 @@ class ContatoDetailsFragment : Fragment() {
         var result = listFavoritosViewModel.addFavoritos(idContato!!)
         result.addOnSuccessListener {
             Toast.makeText(requireContext(),"Contato adicionado aos favoritos com sucesso!",Toast.LENGTH_LONG).show()
+            verificarFavoritos()
         }
         result.addOnFailureListener {
             Toast.makeText(requireContext(),"Erro ao adicionar contato aos favoritos.",Toast.LENGTH_LONG).show()
@@ -139,6 +131,7 @@ class ContatoDetailsFragment : Fragment() {
         var result = listFavoritosViewModel.removeFavorito(idFavorito!!)
         result.addOnSuccessListener {
             Toast.makeText(requireContext(),"Contato removido dos favoritos com sucesso!",Toast.LENGTH_LONG).show()
+            verificarFavoritos()
         }
         result.addOnFailureListener {
             Toast.makeText(requireContext(),"Erro ao remover contato dos favoritos!.",Toast.LENGTH_LONG).show()

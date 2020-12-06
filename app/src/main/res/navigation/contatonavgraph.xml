@@ -30,7 +30,11 @@
         android:id="@+id/contaFragment"
         android:name="br.pro.nigri.assessmentandroid.Fragments.ContaFragment"
         android:label="Conta"
-        tools:layout="@layout/fragment_conta" />
+        tools:layout="@layout/fragment_conta" >
+        <action
+            android:id="@+id/action_contaFragment_to_alterarSenhaFragment"
+            app:destination="@id/alterarSenhaFragment" />
+    </fragment>
     <fragment
         android:id="@+id/listFavoritosFragment"
         android:name="br.pro.nigri.assessmentandroid.Fragments.ListFavoritosFragment"
@@ -40,5 +44,10 @@
             android:id="@+id/action_listFavoritosFragment_to_contatoDetailsFragment"
             app:destination="@id/contatoDetailsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/alterarSenhaFragment"
+        android:name="br.pro.nigri.assessmentandroid.Fragments.alterarSenhaFragment"
+        android:label="fragment_alterar_senha"
+        tools:layout="@layout/fragment_alterar_senha" />
 
 </navigation>

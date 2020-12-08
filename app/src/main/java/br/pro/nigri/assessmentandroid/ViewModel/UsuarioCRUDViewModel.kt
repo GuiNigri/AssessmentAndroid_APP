@@ -24,13 +24,14 @@ class UsuarioCRUDViewModel: ViewModel() {
         return task
     }
 
-    fun createInfoUsuario(nomeUsuario:String,id: String): Task<Void> {
+    fun createInfoUsuario(nomeUsuario:String,provedor:String,id: String): Task<Void> {
 
         var document = collection.document(id)
 
         var taskFireStore = document.set(
             mapOf(
-                "nome" to nomeUsuario
+                "nome" to nomeUsuario,
+                "provedor" to provedor
             )
         )
 

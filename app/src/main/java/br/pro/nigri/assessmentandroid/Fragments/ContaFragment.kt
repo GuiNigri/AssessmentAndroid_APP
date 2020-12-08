@@ -14,6 +14,7 @@ import br.pro.nigri.assessmentandroid.Model.Usuario
 import br.pro.nigri.assessmentandroid.R
 import br.pro.nigri.assessmentandroid.ViewModel.UsuarioCRUDViewModel
 import br.pro.nigri.assessmentandroid.ViewModelFactory
+import com.facebook.login.widget.LoginButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_conta.*
@@ -36,6 +37,7 @@ class ContaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         viewModelFactory = ViewModelFactory()
         activity?.let {
             usuarioCRUDViewModel =
@@ -54,10 +56,13 @@ class ContaFragment : Fragment() {
                 var user = it.toObject(Usuario::class.java)
                 txtNomeConta.setText(user!!.nome)
                 txtEmailConta.setText(firebaseUser!!.email)
+
             }
             result.addOnFailureListener {
-                Toast.makeText(context,"Erro ao recuperar informações do usuario", Toast.LENGTH_LONG)
+                Toast.makeText(context,"Erro ao recuperar informações do usuario", Toast.LENGTH_LONG).show()
             }
+
+
         }
 
         btnEditarConta.setOnClickListener {

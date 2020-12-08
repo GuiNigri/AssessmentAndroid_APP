@@ -27,6 +27,9 @@ class ViewModelFactory:ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ListFavoritosViewModel::class.java)){
             return ListFavoritosViewModel() as T
         }
+        if (modelClass.isAssignableFrom(ApiViewModel::class.java)){
+            return ApiViewModel() as T
+        }
 
 
         throw IllegalArgumentException("Classe ViewModel Desconhecida")

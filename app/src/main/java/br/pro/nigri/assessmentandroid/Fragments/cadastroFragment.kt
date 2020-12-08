@@ -48,7 +48,7 @@ class cadastroFragment : Fragment() {
                 var task = viewModel.createAuthUsuario(email, senha)
 
                 task.addOnSuccessListener {
-                    var result = viewModel.createInfoUsuario(nome, it.user!!.uid)
+                    var result = viewModel.createInfoUsuario(nome, "firebase",it.user!!.uid)
 
                     result.addOnSuccessListener {
                         Toast.makeText(

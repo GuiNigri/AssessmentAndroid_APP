@@ -2,6 +2,7 @@
 
 package br.pro.nigri.assessmentandroid.Fragments
 
+import android.location.Geocoder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,11 +16,18 @@ import androidx.lifecycle.ViewModelProviders
 import br.pro.nigri.assessmentandroid.R
 import br.pro.nigri.assessmentandroid.ViewModel.*
 import br.pro.nigri.assessmentandroid.ViewModelFactory
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_contato_details.*
 
 class ContatoDetailsFragment : Fragment() {
 
     private lateinit var contatoCreateEditViewModel: ContatoCreateEditViewModel
+    private lateinit var apiViewModel: ApiViewModel
     private lateinit var listFavoritosViewModel: ListFavoritosViewModel
     private lateinit var contatoViewModel: ContatoViewModel
     private lateinit var viewModelFactory: ViewModelFactory
@@ -31,6 +39,7 @@ class ContatoDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_contato_details, container, false)
     }
@@ -48,10 +57,22 @@ class ContatoDetailsFragment : Fragment() {
             contatoViewModel =
                 ViewModelProvider(it, viewModelFactory) // MainActivity
                     .get(ContatoViewModel::class.java)
+
+            apiViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ApiViewModel::class.java)
         }
 
 
         contatoCreateEditViewModel.detailsContato.observe(viewLifecycleOwner, Observer {
+
+            apiViewModel.chamarApi(it.celular.toString(),requireContext())
+
+            apiViewModel.detailsNumber.observe(viewLifecycleOwner, Observer { api ->
+                txtOperadora.text = "Operadora: ${api.carrier}"
+                txtPais.text = "País: ${api.country_name}"
+                txtCidade.text = "Local: ${api.location}"
+            })
 
             idContato = it.id
             verificarFavoritos()
@@ -137,6 +158,7 @@ class ContatoDetailsFragment : Fragment() {
             Toast.makeText(requireContext(),"Erro ao remover contato dos favoritos!.",Toast.LENGTH_LONG).show()
         }
     }
+
 
 
 }

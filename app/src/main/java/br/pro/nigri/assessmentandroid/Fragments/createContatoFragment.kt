@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import br.pro.nigri.assessmentandroid.R
+import br.pro.nigri.assessmentandroid.ViewModel.ApiViewModel
 import br.pro.nigri.assessmentandroid.ViewModel.ContatoCreateEditViewModel
 import br.pro.nigri.assessmentandroid.ViewModel.LoginViewModel
 import br.pro.nigri.assessmentandroid.ViewModel.UsuarioCRUDViewModel
@@ -19,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_create_contato.*
 class createContatoFragment : Fragment() {
 
     private lateinit var contatoCreateEditViewModel: ContatoCreateEditViewModel
+    private lateinit var apiViewModel: ApiViewModel
     private lateinit var viewModelFactory: ViewModelFactory
 
     override fun onCreateView(
@@ -38,11 +41,16 @@ class createContatoFragment : Fragment() {
             contatoCreateEditViewModel =
                 ViewModelProvider(it, viewModelFactory) // MainActivity
                     .get(ContatoCreateEditViewModel::class.java)
+
+            apiViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ApiViewModel::class.java)
         }
 
         btnSalvarContato.setOnClickListener {
 
             if (txtNome.text.isNotEmpty() && txtNumber.text.isNotEmpty()){
+
                 var result = contatoCreateEditViewModel.createContato(txtNome.text.toString(),txtNumber.text.toString().toLong())
 
                 result.addOnSuccessListener {
@@ -53,6 +61,7 @@ class createContatoFragment : Fragment() {
                 result.addOnFailureListener {
                     Toast.makeText(requireContext(),"Erro ao cadastrar contato: ${it.message}",Toast.LENGTH_LONG).show()
                 }
+
             }
             else
             {

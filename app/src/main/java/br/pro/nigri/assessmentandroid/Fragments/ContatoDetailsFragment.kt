@@ -66,12 +66,26 @@ class ContatoDetailsFragment : Fragment() {
 
         contatoCreateEditViewModel.detailsContato.observe(viewLifecycleOwner, Observer {
 
+            progressBarDetails.visibility = View.VISIBLE
             apiViewModel.chamarApi(it.celular.toString(),requireContext())
 
             apiViewModel.detailsNumber.observe(viewLifecycleOwner, Observer { api ->
-                txtOperadora.text = "Operadora: ${api.carrier}"
-                txtPais.text = "País: ${api.country_name}"
-                txtCidade.text = "Local: ${api.location}"
+                if (api.valid!!){
+                    txtOperadora.text = "Operadora: ${api.carrier}"
+                    txtPais.text = "País: ${api.country_name}"
+                    txtCidade.text = "Local: ${api.location}"
+                }
+                else{
+                    txtOperadora.text = "Operadora: Número Inválido"
+                    txtPais.text = "País: Número Inválido"
+                    txtCidade.text = "Local: Número Inválido"
+                }
+
+
+                txtOperadora.visibility = View.VISIBLE
+                txtPais.visibility = View.VISIBLE
+                txtCidade.visibility = View.VISIBLE
+                progressBarDetails.visibility = View.GONE
             })
 
             idContato = it.id

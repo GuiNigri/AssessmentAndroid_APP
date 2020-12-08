@@ -127,6 +127,7 @@ class LoginFragment : Fragment() {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         if (currentUser != null){
+            requireActivity().finish()
             val intent = Intent(requireContext(), ApplicationActivity::class.java)
             startActivity(intent)
         }
@@ -147,7 +148,7 @@ class LoginFragment : Fragment() {
                 usuarioCRUDViewModel.createInfoUsuario(user!!.displayName!!,"facebook",user!!.uid)
             }
         }
-
+        requireActivity().finish()
         val intent = Intent(requireContext(), ApplicationActivity::class.java)
         startActivity(intent)
     }
@@ -178,6 +179,7 @@ class LoginFragment : Fragment() {
                 var result = viewModel.logar(email, senha)
 
                 result.addOnSuccessListener {
+                    requireActivity().finish()
                     startActivity(
                         Intent(activity, ApplicationActivity::class.java)
                     )

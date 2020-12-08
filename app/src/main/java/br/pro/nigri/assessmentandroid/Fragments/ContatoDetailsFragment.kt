@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import br.pro.nigri.assessmentandroid.R
 import br.pro.nigri.assessmentandroid.ViewModel.*
 import br.pro.nigri.assessmentandroid.ViewModelFactory
@@ -114,6 +115,37 @@ class ContatoDetailsFragment : Fragment() {
                     result.addOnFailureListener {
                         Toast.makeText(requireContext(),"Erro ao atualizar o contato: ${it.message}",Toast.LENGTH_LONG).show()
                     }
+                }
+
+            }
+
+            btnExcluirContato.setOnClickListener { action ->
+                var result = contatoCreateEditViewModel.deleteContato(it.id!!)
+
+                result.addOnSuccessListener { action ->
+                    var result = contatoCreateEditViewModel.getFavoritos(it.id!!)
+
+
+                        result.addOnSuccessListener { querySnapshot ->
+                            if (!result.result!!.isEmpty) {
+                                var favoritos =
+                                    querySnapshot.documents[0].toObject(FavoritoViewModel::class.java)
+
+                                var result = contatoCreateEditViewModel.deleteFavoritos(favoritos!!)
+                                result.addOnSuccessListener {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Contato Excluido com sucesso!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    findNavController().popBackStack()
+                                }
+                            }
+                            result.addOnFailureListener {
+                                Toast.makeText(requireContext(),"Erro ao excluir contato!", Toast.LENGTH_LONG).show()
+                            }
+                        }
+
                 }
 
             }

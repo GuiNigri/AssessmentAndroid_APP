@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.ContatoDetailsFragment" >
+    tools:context=".Fragments.ContatoDetailsFragment">
 
     <TextView
         android:id="@+id/textView3"
@@ -61,27 +61,6 @@
         app:layout_constraintStart_toStartOf="@+id/guideline13"
         app:layout_constraintTop_toBottomOf="@+id/txt_nome_editar" />
 
-    <Button
-        android:id="@+id/btnSalvarEditar"
-        android:layout_width="0dp"
-        android:layout_height="49dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="8dp"
-        android:text="Salvar"
-        app:layout_constraintEnd_toStartOf="@+id/btnAddFav"
-        app:layout_constraintStart_toStartOf="@+id/guideline13"
-        app:layout_constraintTop_toBottomOf="@+id/txtCelularEditar" />
-
-    <ImageButton
-        android:id="@+id/btnAddFav"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_baseline_star"
-        app:layout_constraintEnd_toStartOf="@+id/guideline14"
-        app:layout_constraintTop_toBottomOf="@+id/txtCelularEditar" />
-
     <TextView
         android:id="@+id/txtOperadora"
         android:layout_width="0dp"
@@ -123,9 +102,44 @@
         android:id="@+id/divider2"
         android:layout_width="0dp"
         android:layout_height="2dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="16dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toStartOf="@+id/guideline14"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline13"
+        app:layout_constraintTop_toBottomOf="@+id/btnExcluirContato" />
+
+    <Button
+        android:id="@+id/btnSalvarEditar"
+        android:layout_width="0dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:text="Salvar"
+        app:layout_constraintEnd_toStartOf="@+id/btnAddFav"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/guideline13"
+        app:layout_constraintTop_toBottomOf="@+id/txtCelularEditar" />
+
+    <ImageButton
+        android:id="@+id/btnAddFav"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="4dp"
+        android:src="@drawable/ic_baseline_star"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
+        app:layout_constraintTop_toBottomOf="@+id/txtCelularEditar" />
+
+    <Button
+        android:id="@+id/btnExcluirContato"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:backgroundTint="#F44336"
+        android:text="Excluir"
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/guideline13"
         app:layout_constraintTop_toBottomOf="@+id/btnSalvarEditar" />
 

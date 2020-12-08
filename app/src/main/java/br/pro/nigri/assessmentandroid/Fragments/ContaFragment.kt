@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import br.pro.nigri.assessmentandroid.ApplicationActivity
 import br.pro.nigri.assessmentandroid.MainActivity
 import br.pro.nigri.assessmentandroid.Model.Usuario
 import br.pro.nigri.assessmentandroid.R
@@ -98,6 +99,7 @@ class ContaFragment : Fragment() {
         }
         btnDeslogarConta.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
+            requireActivity().finish()
             startActivity(
                 Intent(requireContext(), MainActivity::class.java)
             )

@@ -17,12 +17,14 @@ class ContatoCreateEditViewModel:ViewModel() {
     var listaFavoritos = MutableLiveData<List<ContatoViewModel>>()
     var contatosFavoritos: MutableList<ContatoViewModel>? = ArrayList()
     var detailsContato = MutableLiveData<ContatoViewModel>()
+    var collectionFavorito = firebaseFirestore.collection("favorito")
+    var firebaseAuth = FirebaseAuth.getInstance()
+    var user = firebaseAuth.currentUser;
 
     fun createContato(nomeContato:String, celular:Long): Task<Void> {
 
         var document = collection.document()
-        var firebaseAuth = FirebaseAuth.getInstance()
-        var user = firebaseAuth.currentUser;
+
 
         var taskFireStore = document.set(
             mapOf(
@@ -66,9 +68,28 @@ class ContatoCreateEditViewModel:ViewModel() {
             }
 
         }
+    }
+
+    fun deleteContato(id:String):Task<Void>{
+        var document = collection.document(id)
+        var task = document.delete()
+
+        return task
 
 
+    }
 
+    fun getFavoritos(id:String):Task<QuerySnapshot>{
+
+        var result = collectionFavorito.whereEqualTo("contatoId", id).whereEqualTo("userId",user!!.uid).get()
+
+        return result
+    }
+
+    fun deleteFavoritos(favoritoViewModel:FavoritoViewModel):Task<Void>{
+        var result = collectionFavorito.document(favoritoViewModel.id!!).delete()
+
+        return result
     }
 
 

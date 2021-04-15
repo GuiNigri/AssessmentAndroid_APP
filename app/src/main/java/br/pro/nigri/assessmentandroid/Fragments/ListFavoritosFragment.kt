@@ -1,94 +1,103 @@
-@file:Suppress("DEPRECATION")
-
 package br.pro.nigri.assessmentandroid.Fragments
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.pro.nigri.assessmentandroid.Adapter.ContatoAdapter
 import br.pro.nigri.assessmentandroid.R
-import br.pro.nigri.assessmentandroid.ViewModel.ContatoCreateEditViewModel
-import br.pro.nigri.assessmentandroid.ViewModel.ContatoViewModel
-import br.pro.nigri.assessmentandroid.ViewModel.ListContatoViewModel
+import br.pro.nigri.assessmentandroid.ViewModel.*
 import br.pro.nigri.assessmentandroid.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_list_contatos.*
+import kotlinx.android.synthetic.main.fragment_list_favoritos.*
 
+class ListFavoritosFragment : Fragment() {
 
-class ListContatosFragment : Fragment() {
-
-    private lateinit var listContatoViewModel: ListContatoViewModel
+    private lateinit var listFavoritosViewModel: ListFavoritosViewModel
+    private lateinit var contatoViewModel: ContatoViewModel
     private lateinit var contatoCreateEditViewModel: ContatoCreateEditViewModel
     private lateinit var viewModelFactory: ViewModelFactory
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_contatos, container, false)
+        return inflater.inflate(R.layout.fragment_list_favoritos, container, false)
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-            configurarRecyclerView()
-            popular()
-        }
+        configurarRecyclerView()
+        chamarDados()
+
+
+    }
 
     private fun configurarRecyclerView() {
-        contatos_list.layoutManager =
+        list_favoritos.layoutManager =
             LinearLayoutManager(activity)
-        contatos_list.adapter = ContatoAdapter(){
+        list_favoritos.adapter = ContatoAdapter(){
 
             viewModelFactory = ViewModelFactory()
             activity?.let {
-                contatoCreateEditViewModel =
+                contatoViewModel =
                     ViewModelProvider(it, viewModelFactory) // MainActivity
-                        .get(ContatoCreateEditViewModel::class.java)
+                        .get(ContatoViewModel::class.java)
             }
 
-            contatoCreateEditViewModel.getContatoById(it)
+            contatoViewModel.id = it
 
             findNavController().navigate(R.id.contatoDetailsFragment)
-
         }
     }
 
-    private fun popular(){
+    private fun chamarDados(){
 
         viewModelFactory = ViewModelFactory()
         activity?.let {
-            listContatoViewModel =
+            contatoCreateEditViewModel =
                 ViewModelProvider(it, viewModelFactory) // MainActivity
-                    .get(ListContatoViewModel::class.java)
+                    .get(ContatoCreateEditViewModel::class.java)
+
+            listFavoritosViewModel =
+                ViewModelProvider(it, viewModelFactory) // MainActivity
+                    .get(ListFavoritosViewModel::class.java)
         }
 
-        listContatoViewModel.getContatos()
+        listFavoritosViewModel.getFavoritos(){
+            var favoritos = it.toObjects(FavoritoViewModel::class.java)
+            contatoCreateEditViewModel.converterFavToContact(favoritos)
 
-        listContatoViewModel.listaContatos.observe(viewLifecycleOwner, Observer {lista->
+
+        }
+
+        contatoCreateEditViewModel.listaFavoritos.observe(viewLifecycleOwner, Observer {lista->
             if (lista != null){
                 // recupera o adapter da RecyclerView
-                val adapter = contatos_list.adapter
+                val adapter = list_favoritos.adapter
 
                 if (adapter is ContatoAdapter){
                     adapter.atualizarDados(lista)
 
                 }
+            }else{
+                Toast.makeText(requireContext(),"lista nula",Toast.LENGTH_LONG).show()
             }
 
 
-         })
+        })
 
-
-        }
 
     }
 
-
+}

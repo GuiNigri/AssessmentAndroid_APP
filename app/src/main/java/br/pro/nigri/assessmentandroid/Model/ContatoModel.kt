@@ -1,9 +1,14 @@
 package br.pro.nigri.assessmentandroid.Model
 
-import java.io.Serializable
-import java.math.BigInteger
+import com.google.firebase.firestore.DocumentId
+
 
 class ContatoModel (
-    var Nome:String,
-    var Celular:BigInteger
-):Serializable
+    var Nome:String?=null,
+    var celular:Long?=null,
+    var country:String?=null,
+    var location:String?=null,
+    var carrier:String?=null,
+    @DocumentId var id: String? = null
+
+)

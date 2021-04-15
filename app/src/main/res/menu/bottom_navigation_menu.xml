@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/listContatosFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_contact_phone"
+        android:title="Contatos" />
+
+    <item
+        android:id="@+id/listFavoritosFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_star"
+        android:title="Favoritos" />
+
+    <item
+        android:title="Conta"
+        android:id="@+id/contaFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_account" />
+</menu>
